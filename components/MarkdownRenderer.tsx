@@ -1,17 +1,20 @@
-import React, { useMemo } from 'react';
-import FinalDisclaimer from './FinalDisclaimer';
+import React from 'react';
 
 interface MarkdownRendererProps {
   text: string;
 }
 
-const renderTextWithLinks = (text: string) => {
+// Fungsi baru yang lebih canggih untuk merender URL dan teks tebal (**)
+const renderFormattedText = (text: string) => {
     if (!text) return null;
-    const urlRegex = /(\bhttps?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
+    
+    // Regex untuk menangkap URL atau teks yang diapit **...**
+    const regex = /(\bhttps?:\/\/[^\s]+)|(\*\*.*?\*\*)/g;
+    const parts = text.split(regex).filter(Boolean); // filter(Boolean) untuk menghapus undefined/empty strings
 
     return parts.map((part, index) => {
-        if (part.match(urlRegex)) {
+        // Cek jika bagian adalah URL
+        if (/^https?:\/\//.test(part)) {
             return (
                 <a 
                     key={index} 
@@ -24,34 +27,24 @@ const renderTextWithLinks = (text: string) => {
                 </a>
             );
         }
+        // Cek jika bagian adalah teks tebal
+        if (part.startsWith('**') && part.endsWith('**')) {
+            return (
+                <strong key={index}>
+                    {part.substring(2, part.length - 2)}
+                </strong>
+            );
+        }
+        // Jika tidak, itu adalah teks biasa
         return part;
     });
 };
 
 
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
-  const { content, finalDisclaimer } = useMemo(() => {
-    const lines = text.split('\n');
-    let disclaimer = '';
-    let contentLines = [];
-    let isDisclaimer = false;
-
-    for (const line of lines) {
-      if (line.includes('**PERINGATAN FINAL:')) {
-        isDisclaimer = true;
-      }
-      if (isDisclaimer) {
-        disclaimer += line.replace(/\*\*/g, '') + '\n';
-      } else {
-        contentLines.push(line);
-      }
-    }
-    return { content: contentLines.join('\n'), finalDisclaimer: disclaimer.trim() };
-  }, [text]);
-
   const renderContent = () => {
     const elements = [];
-    const lines = content.split('\n');
+    const lines = text.split('\n');
     let inList = false;
     let inTable = false;
     let tableContent: { headers: string[], rows: string[][] } = { headers: [], rows: [] };
@@ -128,7 +121,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
         if (!inList) {
           inList = true;
         }
-        listItems.push(<li key={key}>{renderTextWithLinks(line.trim().substring(2))}</li>);
+        // Gunakan renderer baru untuk list item
+        listItems.push(<li key={key}>{renderFormattedText(line.trim().substring(2))}</li>);
       }
       // Horizontal Rule or Spacer
       else if (line.trim() === '---') {
@@ -139,7 +133,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
       // Paragraph
       else if (line.trim() !== '') {
         flushList(listItems); listItems = [];
-        elements.push(<p key={key} className="my-2 whitespace-pre-wrap">{renderTextWithLinks(line)}</p>);
+        // Gunakan renderer baru untuk paragraf
+        elements.push(<p key={key} className="my-2 whitespace-pre-wrap">{renderFormattedText(line)}</p>);
         inList = false;
       }
     });
@@ -152,7 +147,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
   return (
     <div className="prose prose-slate dark:prose-invert max-w-none">
       {renderContent()}
-      {finalDisclaimer && <FinalDisclaimer text={finalDisclaimer} />}
     </div>
   );
 };
