@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { type Message, Sender } from '../types';
 import MessageComponent from './Message';
@@ -47,7 +46,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage, isLoad
              <TrashIcon className="w-6 h-6" />
          </button>
       </header>
-      <main className="flex-1 overflow-y-auto p-6 space-y-6">
+      <main className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 dark:bg-slate-900/50">
         {messages.map((msg) => (
             msg.isEmergency && msg.sender === Sender.System
             ? <EmergencyMessage key={msg.id} />
