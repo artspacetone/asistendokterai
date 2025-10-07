@@ -1,0 +1,5 @@
+{
+  "name": "Asisten Dokter AI",
+  "description": "Aplikasi chat AI dokter bergaya Tiongkok untuk triase, analisis gambar, dan saran klinis dengan supervisi dokter, memastikan keselamatan dan akurasi klinis.",
+  "requestFramePermissions": []
+}
