@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type AssessmentPlan } from '../types';
 import { ClipboardListIcon, BeakerIcon, ArrowRightIcon } from './Icons';
@@ -14,7 +15,7 @@ const Section: React.FC<{ title: string; icon: React.ReactNode; items: string[] 
                 {icon}
                 <span className="ml-2">{title}</span>
             </h3>
-            <ul className="list-disc list-inside space-y-1 pl-2 text-slate-600 dark:text-slate-300">
+            <ul className="list-disc list-inside space-y-1 pl-2 text-slate-600 dark:text-slate-300 text-justify">
                 {items.map((item, index) => (
                     <li key={index}>{item}</li>
                 ))}
