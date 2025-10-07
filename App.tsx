@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { Sender, type Message } from './types';
 import { INITIAL_PROMPT, EMERGENCY_KEYWORDS } from './constants';
@@ -105,7 +106,8 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const aiResponse = await generateAiResponse(newMessagesWithUser, userMessageText, imageBase64);
+      // FIX: `generateAiResponse` expects only one argument (the messages array).
+      const aiResponse = await generateAiResponse(newMessagesWithUser);
       const aiMessage: Message = {
         id: generateUniqueId(),
         sender: Sender.AI,
@@ -179,8 +181,8 @@ export default function App() {
   };
 
   return (
-    <div className="bg-slate-100 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-200 w-full h-screen flex flex-col items-center justify-center">
-        <div className="w-full h-full md:w-full lg:w-3/4 xl:w-1/2 max-w-4xl flex flex-col bg-white dark:bg-slate-800 shadow-2xl rounded-lg my-4 relative">
+    <div className="bg-slate-200 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-200 w-full h-screen flex flex-col items-center justify-center p-0 md:p-4">
+        <div className="w-full h-full md:w-full lg:w-3/4 xl:w-1/2 max-w-4xl flex flex-col bg-slate-100 dark:bg-slate-800/50 shadow-2xl md:rounded-lg relative">
             {!sessionStarted ? (
                 <Disclaimer onAgree={handleStartSession} />
             ) : (
