@@ -7,10 +7,11 @@ export const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
   </div>
 );
 
-export const AiIcon: React.FC<{ className?: string }> = ({ className }) => (
+// FIX: Added SparklesIcon and removed unused AiIcon to resolve import error in Message.tsx.
+export const SparklesIcon: React.FC<{ className?: string }> = ({ className }) => (
     <div className={`rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center ${className}`}>
       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-500" viewBox="0 0 24 24" fill="currentColor">
-        <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.981A10.501 10.501 0 0118 18a10.5 10.5 0 01-10.5-10.5c0-1.79.448-3.47 1.218-4.998.16-.303.52-.424.81-.284zM18 6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H18a.75.75 0 01-.75-.75zM16.25 8.75a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H17a.75.75 0 01-.75-.75zM18 10a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H18a.75.75 0 01-.75-.75z" clipRule="evenodd" />
+        <path d="M12.89,3.1L12,5.5L11.11,3.1L9.22,2.25L11.11,1.4L12,0L12.89,1.4L14.78,2.25L12.89,3.1M18.39,6.5L17.5,8.89L16.61,6.5L14.72,5.61L16.61,4.72L17.5,2.33L18.39,4.72L20.28,5.61L18.39,6.5M18.39,18.39L17.5,16L16.61,18.39L14.72,19.28L16.61,20.17L17.5,22.56L18.39,20.17L20.28,19.28L18.39,18.39M7,14.5L5.6,15.42L6.14,13.84L5,12.58L6.6,12.5L7,11L7.4,12.5L9,12.58L7.86,13.84L8.4,15.42L7,14.5Z" />
       </svg>
     </div>
 );
