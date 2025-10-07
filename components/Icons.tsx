@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -7,8 +8,10 @@ export const UserIcon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 export const AiIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <div className={`rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center ${className}`}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
+    <div className={`rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center ${className}`}>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-500" viewBox="0 0 24 24" fill="currentColor">
+        <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.981A10.501 10.501 0 0118 18a10.5 10.5 0 01-10.5-10.5c0-1.79.448-3.47 1.218-4.998.16-.303.52-.424.81-.284zM18 6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H18a.75.75 0 01-.75-.75zM16.25 8.75a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H17a.75.75 0 01-.75-.75zM18 10a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H18a.75.75 0 01-.75-.75z" clipRule="evenodd" />
+      </svg>
     </div>
 );
 
