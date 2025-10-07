@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { InfoIcon } from './Icons';
 
@@ -11,7 +12,7 @@ const FinalDisclaimer: React.FC<FinalDisclaimerProps> = ({ text }) => {
       <div className="flex items-start gap-3">
         <InfoIcon className="w-8 h-8 text-amber-500 dark:text-amber-400 flex-shrink-0" />
         <div>
-          <p className="text-amber-800 dark:text-amber-200 font-semibold whitespace-pre-wrap">
+          <p className="text-amber-800 dark:text-amber-200 font-semibold whitespace-pre-wrap text-justify">
             {text}
           </p>
         </div>
