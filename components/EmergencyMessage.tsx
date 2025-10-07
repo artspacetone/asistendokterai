@@ -8,7 +8,7 @@ const EmergencyMessage: React.FC = () => {
             <AlertTriangleIcon className="h-10 w-10 text-red-500 flex-shrink-0 mt-1" />
             <div>
                 <h2 className="text-xl font-extrabold text-red-800 dark:text-red-200 mb-2">DARURAT MEDIS TERDETEKSI</h2>
-                <p className="mb-4">
+                <p className="mb-4 text-justify">
                     Gejala yang Anda sebutkan mungkin mengindikasikan kondisi medis yang serius. Asisten AI ini <strong>tidak dapat</strong> memberikan bantuan dalam situasi darurat.
                 </p>
                 <div className="font-bold border-t border-red-300 dark:border-red-700 pt-4 mt-4">
