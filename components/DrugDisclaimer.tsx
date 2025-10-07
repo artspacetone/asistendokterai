@@ -3,7 +3,7 @@ import { AlertTriangleIcon } from './Icons';
 
 const DrugDisclaimer: React.FC = () => {
   return (
-    <div className="mt-4 border-t-4 border-amber-400 dark:border-amber-500 bg-amber-50 dark:bg-amber-900/40 p-4 rounded-b-lg">
+    <div className="w-full bg-amber-50 dark:bg-amber-900/40 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-r-lg shadow-sm">
       <div className="flex items-start gap-3">
         <AlertTriangleIcon className="w-8 h-8 text-amber-500 dark:text-amber-400 flex-shrink-0" />
         <div>
