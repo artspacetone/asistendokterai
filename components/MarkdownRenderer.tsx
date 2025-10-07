@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface MarkdownRendererProps {
@@ -51,7 +52,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
 
     const flushList = (listItems: React.ReactNode[]) => {
       if (listItems.length > 0) {
-        elements.push(<ul key={`ul-${elements.length}`} className="list-disc list-inside space-y-1 my-2 pl-4">{listItems}</ul>);
+        elements.push(<ul key={`ul-${elements.length}`} className="list-disc list-inside space-y-1 my-2 pl-4 text-justify">{listItems}</ul>);
       }
     };
     
@@ -134,7 +135,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
       else if (line.trim() !== '') {
         flushList(listItems); listItems = [];
         // Gunakan renderer baru untuk paragraf
-        elements.push(<p key={key} className="my-2 whitespace-pre-wrap">{renderFormattedText(line)}</p>);
+        elements.push(<p key={key} className="my-2 whitespace-pre-wrap text-justify">{renderFormattedText(line)}</p>);
         inList = false;
       }
     });
