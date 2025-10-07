@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AlertTriangleIcon } from './Icons';
 
@@ -10,7 +11,7 @@ const DrugDisclaimer: React.FC = () => {
           <h3 className="text-lg font-bold text-amber-800 dark:text-amber-200">
             PERINGATAN PENTING MENGENAI INFORMASI OBAT
           </h3>
-          <ul className="list-disc list-inside mt-2 space-y-1 text-amber-700 dark:text-amber-300">
+          <ul className="list-disc list-inside mt-2 space-y-1 text-amber-700 dark:text-amber-300 text-justify">
             <li>Informasi ini <strong>BUKAN resep</strong>, melainkan contoh untuk tujuan edukasi.</li>
             <li>Nama obat yang disebut adalah contoh umum dan <strong>belum tentu cocok atau aman</strong> untuk Anda.</li>
             <li className="font-bold">
