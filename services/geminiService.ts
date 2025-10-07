@@ -1,13 +1,14 @@
-import { GoogleGenAI, GenerateContentResponse, Part, Type } from "@google/genai";
+
+import { GoogleGenAI, GenerateContentResponse, Part, Type, Content } from "@google/genai";
 import { SYSTEM_INSTRUCTION, DRUG_INFO_KEYWORDS } from '../constants';
 import { type Message, Sender, type AssessmentPlan } from "../types";
 
-// Fix: Use process.env.API_KEY as per coding guidelines, instead of Vite-specific import.meta.env.
-const API_KEY = process.env.API_KEY;
+// This is the correct way to access environment variables in a Vite project.
+// Vercel will replace this with your secret variable during the build process.
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 if (!API_KEY) {
-  // Fix: Updated error message to reflect the use of process.env.API_KEY.
-  throw new Error("API_KEY environment variable is not set.");
+  throw new Error("VITE_API_KEY environment variable is not set. Please check your Vercel project settings and ensure the variable is named correctly.");
 }
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
@@ -19,44 +20,58 @@ export interface AiResponse {
     containsDrugInfo?: boolean;
 }
 
-// Fix: Removed unused and incorrectly typed buildHistory function.
-// The function was returning Content[] instead of the declared Part[], causing a type error.
-// The logic for building chat history is correctly implemented within generateAiResponse and generateAssessmentPlan.
-
-export async function generateAiResponse(
-  messages: Message[],
-  newUserMessage: string,
-  imageBase64?: string
-): Promise<AiResponse> {
-    const history = messages.slice(0, -1).map(msg => {
+// Helper function to build the conversation history in the format expected by the Gemini API.
+function buildHistory(messages: Message[]): Content[] {
+    return messages.map(msg => {
         const role = msg.sender === Sender.User ? 'user' : 'model';
         const parts: Part[] = [];
-        if (msg.text) parts.push({ text: msg.text });
-        if (msg.image) {
-             const mimeType = msg.image.startsWith('data:image/jpeg') ? 'image/jpeg' : 
-                             msg.image.startsWith('data:image/png') ? 'image/png' : 'image/webp';
-            const imageData = msg.image.split(',')[1];
-            parts.push({ inlineData: { mimeType, data: imageData } });
+
+        // Ensure text is always added as a part if it exists
+        if (msg.text) {
+            parts.push({ text: msg.text });
         }
+
+        // Handle images, ensuring they are correctly formatted
+        if (msg.image && msg.image.startsWith('data:image')) {
+            try {
+                const [header, data] = msg.image.split(',');
+                if (header && data) {
+                    const mimeType = header.split(':')[1].split(';')[0];
+                    parts.push({ inlineData: { mimeType, data } });
+                }
+            } catch (error) {
+                console.error("Failed to process inline image data:", error);
+            }
+        }
+        
         return { role, parts };
     });
+}
 
-    const lastUserMessage = messages[messages.length-1];
+export async function generateAiResponse(
+  messages: Message[]
+): Promise<AiResponse> {
+    // The history for the API call should be all messages *except* the last one.
+    const history = buildHistory(messages.slice(0, -1));
+    const lastUserMessage = messages[messages.length - 1];
+
+    // The last message is the current input to the model.
     const userParts: Part[] = [{ text: lastUserMessage.text }];
 
     if (lastUserMessage.image) {
-        const mimeType = lastUserMessage.image.startsWith('data:image/jpeg') ? 'image/jpeg' : 
-                         lastUserMessage.image.startsWith('data:image/png') ? 'image/png' : 'image/webp';
-        const imageData = lastUserMessage.image.split(',')[1];
+        const [header, data] = lastUserMessage.image.split(',');
+        const mimeType = header.split(':')[1].split(';')[0];
+        // For multimodal input, it's often better to put the image first.
         userParts.unshift({
             inlineData: {
                 mimeType,
-                data: imageData,
+                data,
             },
         });
     }
     
-    const contents = [...history, { role: 'user', parts: userParts }];
+    // Combine history with the current user message.
+    const contents: Content[] = [...history, { role: 'user', parts: userParts }];
 
     const response: GenerateContentResponse = await ai.models.generateContent({
         model: model,
@@ -69,11 +84,13 @@ export async function generateAiResponse(
     let rawText = response.text;
     let imageUrl: string | undefined = undefined;
 
+    // Regex to find all URLs in the text
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const urls = rawText.match(urlRegex);
 
     if (urls) {
         for (const url of urls) {
+            // Check if the URL is for an image, allowing for query parameters
             if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(url)) {
                 imageUrl = url;
                 rawText = rawText.replace(url, '').trim();
@@ -89,26 +106,14 @@ export async function generateAiResponse(
 
 
 export async function generateAssessmentPlan(messages: Message[]): Promise<AssessmentPlan> {
-    const history = messages.map(msg => {
-        const role = msg.sender === Sender.User ? 'user' : 'model';
-        const parts: Part[] = [];
-        if (msg.text) parts.push({ text: msg.text });
-        if (msg.image) {
-             const mimeType = msg.image.startsWith('data:image/jpeg') ? 'image/jpeg' : 
-                             msg.image.startsWith('data:image/png') ? 'image/png' : 'image/webp';
-            const imageData = msg.image.split(',')[1];
-            parts.push({ inlineData: { mimeType, data: imageData } });
-        }
-        return { role, parts };
-    });
-
+    const history = buildHistory(messages);
     const planPrompt = `
         Berdasarkan seluruh percakapan di atas, buatlah ringkasan dan rencana dalam format JSON.
         - 'assessment': Berikan daftar poin-poin kemungkinan penyebab gejala (diagnosis banding), selalu gunakan kata "kemungkinan" atau "bisa jadi".
         - 'plan': Berikan daftar poin-poin saran non-obat yang aman dan dapat dilakukan.
         - 'nextSteps': Berikan daftar poin-poin langkah selanjutnya yang paling penting, seperti "Segera konsultasi ke dokter umum" atau "Observasi gejala selama 1-2 hari".
     `;
-    const contents = [...history, { role: 'user', parts: [{ text: planPrompt }] }];
+    const contents: Content[] = [...history, { role: 'user', parts: [{ text: planPrompt }] }];
 
     const response = await ai.models.generateContent({
         model: model,
